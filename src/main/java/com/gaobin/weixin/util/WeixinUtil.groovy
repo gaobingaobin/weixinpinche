@@ -1,4 +1,4 @@
-package com.gaobin.weixin
+package com.gaobin.weixin.util
 /**
  * Created with IntelliJ IDEA.
  * User: gaobin
