@@ -1,7 +1,8 @@
 package com.gaobin.weixin.util;
 
 
-import com.gaobin.weixin.model.TextMessage;
+
+import com.gaobin.weixin.model.*;
 import com.thoughtworks.xstream.XStream;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -11,16 +12,14 @@ import org.dom4j.io.SAXReader;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Administrator on 2016-11-05.
  */
 public class messageUtil {
     public static final String MESSAGE_TEXT = "text";
+    public static final String MESSAGE_NEWS = "news";
     public static final String MESSAGE_IMAGE = "image";
     public static final String MESSAGE_VOICE = "voice";
     public static final String MESSAGE_VIDEO = "video";
@@ -92,5 +91,60 @@ public class messageUtil {
         StringBuilder sb = new StringBuilder();
         sb.append("第一次尝试微信公众号开发");
         return sb.toString();
+    }
+    /**
+     * 图文消息转xml
+     */
+    public static String newsMessageToXml(NewsMessage newsMessage){
+        XStream xStream = new XStream();
+        xStream.alias("xml",newsMessage.getClass());
+        xStream.alias("item",new News().getClass());
+        return xStream.toXML(newsMessage);
+    }
+    public static String initNewsMessage(String toUserName, String fromUserName){
+        String message  = "";
+        List<News> newsList = new ArrayList<>();
+        NewsMessage newsMessage = new NewsMessage();
+        News news = new News();
+        news.setTitle("个人介绍");
+        news.setDescription("本人技能：html css java Jquery");
+        news.setPicUrl("http://gaobin.hmatm.com/images/gaobin.jpg");
+        news.setUrl("http://imooc.com");
+        newsList.add(news);
+        newsMessage.setFromUserName(fromUserName);
+        newsMessage.setToUserName(toUserName);
+        newsMessage.setCreateTime(new Date().getTime());
+        newsMessage.setMsgType(MESSAGE_NEWS);
+        newsMessage.setArticleCount(newsList.size());
+        newsMessage.setArticles(newsList);
+        message = newsMessageToXml(newsMessage);
+        return message;
+
+    }
+    public static Menu intiMenu(){
+        Menu menu = new Menu();
+        ClickButton clickButton = new ClickButton();
+        clickButton.setName("click菜单");
+        clickButton.setType("click");
+        clickButton.setKey("dd");
+        ViewButton viewButton = new ViewButton();
+        viewButton.setName("微信拼车");
+        viewButton.setType("view");
+        viewButton.setUrl("http://www.imooc.com");
+        ClickButton clickButton1 = new ClickButton();
+        clickButton1.setName("扫描事件");
+        clickButton1.setType("scancode_push");
+        clickButton.setKey("32");
+        ClickButton clickButton2 = new ClickButton();
+        clickButton1.setName("地理位置");
+        clickButton1.setType("location_select");
+        clickButton.setKey("32");
+        Button button = new Button();
+        button.setName("小工具");
+        button.setSub_button(new Button[]{clickButton1,clickButton2});
+        menu.setButton(new Button[]{clickButton,viewButton,button});
+        return menu;
+
+
     }
 }

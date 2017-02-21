@@ -56,7 +56,9 @@ public class MainController {
                     message = messageUtil.initText(ToUserName, FromUserName, messageUtil.fristMenu());
                 }else if("2".equals(Content)){
                     message = messageUtil.initText(ToUserName, FromUserName, messageUtil.secondMenu());
-                } else if ("?".equals(Content) || "？".equals(Content)) {
+                } else if("3".equals(Content)){
+                    message = messageUtil.initNewsMessage(ToUserName, FromUserName);
+                }else if ("?".equals(Content) || "？".equals(Content)) {
                     message = messageUtil.initText(ToUserName, FromUserName, messageUtil.menuText());
                 }
             } else if (messageUtil.MESSAGE_EVENT.equals(MsgType)) {
