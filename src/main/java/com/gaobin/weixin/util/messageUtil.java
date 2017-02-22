@@ -3,11 +3,15 @@ package com.gaobin.weixin.util;
 
 
 import com.gaobin.weixin.model.*;
+import com.google.gson.Gson;
 import com.thoughtworks.xstream.XStream;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
+
+
+
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -121,8 +125,8 @@ public class messageUtil {
         return message;
 
     }
-    public static Menu intiMenu(){
-        Menu menu = new Menu();
+    public static String intiMenu()  {
+        Gson gson = new Gson();
         ClickButton clickButton = new ClickButton();
         clickButton.setName("click菜单");
         clickButton.setType("click");
@@ -134,16 +138,18 @@ public class messageUtil {
         ClickButton clickButton1 = new ClickButton();
         clickButton1.setName("扫描事件");
         clickButton1.setType("scancode_push");
-        clickButton.setKey("32");
+        clickButton1.setKey("32");
         ClickButton clickButton2 = new ClickButton();
-        clickButton1.setName("地理位置");
-        clickButton1.setType("location_select");
-        clickButton.setKey("32");
+        clickButton2.setName("地理位置");
+        clickButton2.setType("location_select");
+        clickButton2.setKey("32");
         Button button = new Button();
         button.setName("小工具");
         button.setSub_button(new Button[]{clickButton1,clickButton2});
+        Menu menu = new Menu();
         menu.setButton(new Button[]{clickButton,viewButton,button});
-        return menu;
+        System.out.println(gson.toJson(menu));
+        return gson.toJson(menu);
 
 
     }

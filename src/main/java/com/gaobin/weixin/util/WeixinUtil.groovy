@@ -1,10 +1,11 @@
 package com.gaobin.weixin.util
 
-import com.fasterxml.jackson.databind.util.JSONPObject
-import com.gaobin.weixin.model.Menu
+
 import groovy.json.JsonSlurper
-import org.json.JSONObject
 import org.springframework.core.io.FileSystemResource
+import org.springframework.http.HttpEntity
+import org.springframework.http.HttpHeaders
+import org.springframework.http.MediaType
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.util.MultiValueMap
 import org.springframework.web.client.RestTemplate
@@ -61,10 +62,13 @@ class WeixinUtil {
      * @createDate 2017/2/21
      * @description 生成菜单
     */
-    static String createMenu(String accesstoken,Menu menu,RestTemplate restTemplate){
-        String strMenu = JSONObject.fromObject(menu.toString());
+    static String createMenu(String accesstoken,String menu,RestTemplate restTemplate){
+        HttpHeaders headers = new HttpHeaders();
+        MediaType type = MediaType.parseMediaType("application/x-www-form-urlencoded; charset=UTF-8");//解决中文乱码，改写http头的编码格式
+        headers.setContentType(type);
+        HttpEntity<String> formEntity = new HttpEntity<String>(menu, headers);
         JsonSlurper slurper=new JsonSlurper()
-        String str = restTemplate.postForObject("${APIURL}menu/create?access_token=${accesstoken}",strMenu,String)
+        String str = restTemplate.postForObject("${APIURL}menu/create?access_token=${accesstoken}",formEntity,String)
         def o=slurper.parseText(str)
         int errcode=o["errcode"]
         if(errcode==0){

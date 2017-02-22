@@ -1,7 +1,9 @@
 package com.gaobin.weixin;
 
+import com.gaobin.weixin.util.GsonUtil;
 import com.gaobin.weixin.util.WeixinUtil;
 import com.gaobin.weixin.util.messageUtil;
+import org.json.JSONException;
 import org.junit.Test;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.annotation.ApplicationScope;
@@ -22,7 +24,7 @@ public class WeixinTest {
         System.out.print(WeixinUtil.getAccessToken(restTemplate));
     }
     @Test
-    public void testCreateMenu(){
+    public void testCreateMenu() throws JSONException {
         RestTemplate restTemplate= new RestTemplate();
         String str = WeixinUtil.createMenu(WeixinUtil.getAccessToken(restTemplate), messageUtil.intiMenu(),restTemplate);
         System.out.print(str);
