@@ -77,5 +77,14 @@ class WeixinUtil {
             return "菜单创建失败"
         }
     }
+    /**
+     * @author gaobin
+     * @createDate 2017/2/22
+     * @description 根据openid获取用户信息
+    */
+    static String getUserInfo(String openid,String accesstoken,RestTemplate restTemplate){
+        String userInfo =restTemplate.getForObject("${APIURL}user/info?access_token=${accesstoken}&openid=${openid}&lang=zh_CN",String);
+
+    }
 
 }
