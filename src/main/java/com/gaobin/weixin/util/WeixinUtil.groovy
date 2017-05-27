@@ -2,13 +2,17 @@ package com.gaobin.weixin.util
 
 
 import groovy.json.JsonSlurper
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.io.FileSystemResource
+import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.util.MultiValueMap
 import org.springframework.web.client.RestTemplate
+
+import java.util.concurrent.TimeUnit
 
 /**
  * Created with IntelliJ IDEA.
@@ -22,19 +26,26 @@ class WeixinUtil {
     private static final String APPID = "wx4a9c4f85ebf81d32";
     private static final String SECRET = "6eaee22929aaee51df680a6b9dd0ab80";
     private static final String APIURL = "https://api.weixin.qq.com/cgi-bin/";
+    @Autowired
   /**
    * @author gaobin
    * @createDate 2017/2/21
    * @description
    * @return token 是json字符串， JsonSlurper slurper=new JsonSlurper() def o=slurper.parseText(token) accesstoken=o["access_token"]
   */
-    static String getAccessToken(RestTemplate restTemplate){
-        String accesstoken = null
-        String token =restTemplate.getForObject("${APIURL}token?grant_type=client_credential&appid=${APPID}&secret=${SECRET}",String);
-        JsonSlurper slurper=new JsonSlurper()
-        def o=slurper.parseText(token)
-        accesstoken=o["access_token"]
-        return accesstoken;
+    static String getAccessToken(RestTemplate restTemplate,String tokenName,RedisTemplate<String,String> redisTemplate){
+        String accesstoken=redisTemplate.opsForValue().get(tokenName)
+        if(accesstoken){
+            return accesstoken
+        }else{
+            String token =restTemplate.getForObject("${APIURL}token?grant_type=client_credential&appid=${APPID}&secret=${SECRET}",String);
+            JsonSlurper slurper=new JsonSlurper()
+            def o=slurper.parseText(token)
+            accesstoken=o["access_token"]
+            int expires_in=o["expires_in"]
+            redisTemplate.opsForValue().set(tokenName,accesstoken,expires_in-200,TimeUnit.SECONDS)
+            return accesstoken;
+        }
     }
     /**
      * @author gaobin
